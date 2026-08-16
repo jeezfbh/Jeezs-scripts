@@ -1,0 +1,1085 @@
+-- Murder Mystery 2 HUB | Made by Jeezs Empire
+-- Key System GUI
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- ============ CONFIG ============
+local VALID_KEYS = {
+    ["p10"] = true, -- add more keys as needed: ["key2"] = true,
+}
+local KEY_LINK = "[https://www.roblox.com.ml/communities/358772100557/Waffle Club]" -- change this any time
+-- =================================
+
+-- Cleanup old instance if re-running
+if playerGui:FindFirstChild("MM2_KeySystem") then
+    playerGui.MM2_KeySystem:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MM2_KeySystem"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = playerGui
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 420, 0, 230)
+Main.Position = UDim2.new(0.5, -210, 0.5, -115)
+Main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+Main.BorderSizePixel = 0
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(90, 200, 120)
+MainStroke.Thickness = 1.5
+MainStroke.Parent = Main
+
+-- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 45)
+TitleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = Main
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleBar
+
+local TitleFix = Instance.new("Frame")
+TitleFix.Size = UDim2.new(1, 0, 0, 15)
+TitleFix.Position = UDim2.new(0, 0, 1, -15)
+TitleFix.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TitleFix.BorderSizePixel = 0
+TitleFix.ZIndex = 0
+TitleFix.Parent = TitleBar
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -20, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Murder Mystery 2 HUB | Jeezs Empire"
+Title.TextColor3 = Color3.fromRGB(120, 230, 150)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.Parent = TitleBar
+
+-- Subtitle
+local Sub = Instance.new("TextLabel")
+Sub.Size = UDim2.new(1, -40, 0, 20)
+Sub.Position = UDim2.new(0, 20, 0, 55)
+Sub.BackgroundTransparency = 1
+Sub.Text = "Enter your key below to unlock the hub"
+Sub.TextColor3 = Color3.fromRGB(170, 170, 175)
+Sub.Font = Enum.Font.Gotham
+Sub.TextSize = 13
+Sub.TextXAlignment = Enum.TextXAlignment.Left
+Sub.Parent = Main
+
+-- Key Input Box
+local KeyBox = Instance.new("TextBox")
+KeyBox.Size = UDim2.new(1, -40, 0, 40)
+KeyBox.Position = UDim2.new(0, 20, 0, 82)
+KeyBox.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBox.PlaceholderText = "Paste your key here..."
+KeyBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 125)
+KeyBox.Text = ""
+KeyBox.ClearTextOnFocus = false
+KeyBox.Font = Enum.Font.Gotham
+KeyBox.TextSize = 14
+KeyBox.Parent = Main
+
+local KeyBoxCorner = Instance.new("UICorner")
+KeyBoxCorner.CornerRadius = UDim.new(0, 8)
+KeyBoxCorner.Parent = KeyBox
+
+local KeyBoxStroke = Instance.new("UIStroke")
+KeyBoxStroke.Color = Color3.fromRGB(60, 60, 66)
+KeyBoxStroke.Thickness = 1
+KeyBoxStroke.Parent = KeyBox
+
+-- Status Label
+local Status = Instance.new("TextLabel")
+Status.Size = UDim2.new(1, -40, 0, 20)
+Status.Position = UDim2.new(0, 20, 0, 128)
+Status.BackgroundTransparency = 1
+Status.Text = ""
+Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+Status.Font = Enum.Font.GothamMedium
+Status.TextSize = 12
+Status.TextXAlignment = Enum.TextXAlignment.Left
+Status.Parent = Main
+
+-- Left Button: Check Key
+local CheckBtn = Instance.new("TextButton")
+CheckBtn.Size = UDim2.new(0.46, 0, 0, 42)
+CheckBtn.Position = UDim2.new(0, 20, 1, -60)
+CheckBtn.BackgroundColor3 = Color3.fromRGB(60, 180, 100)
+CheckBtn.Text = "Check Key"
+CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheckBtn.Font = Enum.Font.GothamBold
+CheckBtn.TextSize = 15
+CheckBtn.AutoButtonColor = false
+CheckBtn.Parent = Main
+
+local CheckCorner = Instance.new("UICorner")
+CheckCorner.CornerRadius = UDim.new(0, 8)
+CheckCorner.Parent = CheckBtn
+
+-- Right Button: Copy Link
+local CopyBtn = Instance.new("TextButton")
+CopyBtn.Size = UDim2.new(0.46, 0, 0, 42)
+CopyBtn.Position = UDim2.new(0.54, 0, 1, -60)
+CopyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+CopyBtn.Text = "Copy Link"
+CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyBtn.Font = Enum.Font.GothamBold
+CopyBtn.TextSize = 15
+CopyBtn.AutoButtonColor = false
+CopyBtn.Parent = Main
+
+local CopyCorner = Instance.new("UICorner")
+CopyCorner.CornerRadius = UDim.new(0, 8)
+CopyCorner.Parent = CopyBtn
+
+local CopyStroke = Instance.new("UIStroke")
+CopyStroke.Color = Color3.fromRGB(90, 200, 120)
+CopyStroke.Thickness = 1
+CopyStroke.Parent = CopyBtn
+
+-- Hover effects
+local function hoverEffect(btn, normalColor, hoverColor)
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = hoverColor}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = normalColor}):Play()
+    end)
+end
+
+hoverEffect(CheckBtn, Color3.fromRGB(60, 180, 100), Color3.fromRGB(75, 200, 115))
+hoverEffect(CopyBtn, Color3.fromRGB(40, 40, 48), Color3.fromRGB(55, 55, 63))
+
+-- Copy Link functionality
+CopyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(KEY_LINK)
+        Status.TextColor3 = Color3.fromRGB(120, 230, 150)
+        Status.Text = "Link copied to clipboard!"
+    else
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Clipboard not supported by your executor."
+    end
+end)
+
+-- Check Key functionality
+CheckBtn.MouseButton1Click:Connect(function()
+    local enteredKey = KeyBox.Text
+
+    if enteredKey == "" then
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Please enter a key first."
+        return
+    end
+
+    if VALID_KEYS[enteredKey] then
+        Status.TextColor3 = Color3.fromRGB(120, 230, 150)
+        Status.Text = "Key accepted! Loading hub..."
+
+        task.wait(1)
+        ScreenGui:Destroy()
+
+        -- ============================================
+        -- Murder Mystery 2 HUB | Made by Jeezs Empire
+-- Key System GUI
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- ============ CONFIG ============
+local VALID_KEYS = {
+    ["p10"] = true, -- add more keys as needed: ["key2"] = true,
+}
+local KEY_LINK = "[https://www.roblox.com.ml/communities/358772100557/Waffle Club]" -- change this any time
+-- =================================
+
+-- Cleanup old instance if re-running
+if playerGui:FindFirstChild("MM2_KeySystem") then
+    playerGui.MM2_KeySystem:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MM2_KeySystem"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = playerGui
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 420, 0, 230)
+Main.Position = UDim2.new(0.5, -210, 0.5, -115)
+Main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+Main.BorderSizePixel = 0
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(90, 200, 120)
+MainStroke.Thickness = 1.5
+MainStroke.Parent = Main
+
+-- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 45)
+TitleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = Main
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleBar
+
+local TitleFix = Instance.new("Frame")
+TitleFix.Size = UDim2.new(1, 0, 0, 15)
+TitleFix.Position = UDim2.new(0, 0, 1, -15)
+TitleFix.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TitleFix.BorderSizePixel = 0
+TitleFix.ZIndex = 0
+TitleFix.Parent = TitleBar
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -20, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Murder Mystery 2 HUB | Jeezs Empire"
+Title.TextColor3 = Color3.fromRGB(120, 230, 150)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.Parent = TitleBar
+
+-- Subtitle
+local Sub = Instance.new("TextLabel")
+Sub.Size = UDim2.new(1, -40, 0, 20)
+Sub.Position = UDim2.new(0, 20, 0, 55)
+Sub.BackgroundTransparency = 1
+Sub.Text = "Enter your key below to unlock the hub"
+Sub.TextColor3 = Color3.fromRGB(170, 170, 175)
+Sub.Font = Enum.Font.Gotham
+Sub.TextSize = 13
+Sub.TextXAlignment = Enum.TextXAlignment.Left
+Sub.Parent = Main
+
+-- Key Input Box
+local KeyBox = Instance.new("TextBox")
+KeyBox.Size = UDim2.new(1, -40, 0, 40)
+KeyBox.Position = UDim2.new(0, 20, 0, 82)
+KeyBox.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBox.PlaceholderText = "Paste your key here..."
+KeyBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 125)
+KeyBox.Text = ""
+KeyBox.ClearTextOnFocus = false
+KeyBox.Font = Enum.Font.Gotham
+KeyBox.TextSize = 14
+KeyBox.Parent = Main
+
+local KeyBoxCorner = Instance.new("UICorner")
+KeyBoxCorner.CornerRadius = UDim.new(0, 8)
+KeyBoxCorner.Parent = KeyBox
+
+local KeyBoxStroke = Instance.new("UIStroke")
+KeyBoxStroke.Color = Color3.fromRGB(60, 60, 66)
+KeyBoxStroke.Thickness = 1
+KeyBoxStroke.Parent = KeyBox
+
+-- Status Label
+local Status = Instance.new("TextLabel")
+Status.Size = UDim2.new(1, -40, 0, 20)
+Status.Position = UDim2.new(0, 20, 0, 128)
+Status.BackgroundTransparency = 1
+Status.Text = ""
+Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+Status.Font = Enum.Font.GothamMedium
+Status.TextSize = 12
+Status.TextXAlignment = Enum.TextXAlignment.Left
+Status.Parent = Main
+
+-- Left Button: Check Key
+local CheckBtn = Instance.new("TextButton")
+CheckBtn.Size = UDim2.new(0.46, 0, 0, 42)
+CheckBtn.Position = UDim2.new(0, 20, 1, -60)
+CheckBtn.BackgroundColor3 = Color3.fromRGB(60, 180, 100)
+CheckBtn.Text = "Check Key"
+CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheckBtn.Font = Enum.Font.GothamBold
+CheckBtn.TextSize = 15
+CheckBtn.AutoButtonColor = false
+CheckBtn.Parent = Main
+
+local CheckCorner = Instance.new("UICorner")
+CheckCorner.CornerRadius = UDim.new(0, 8)
+CheckCorner.Parent = CheckBtn
+
+-- Right Button: Copy Link
+local CopyBtn = Instance.new("TextButton")
+CopyBtn.Size = UDim2.new(0.46, 0, 0, 42)
+CopyBtn.Position = UDim2.new(0.54, 0, 1, -60)
+CopyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+CopyBtn.Text = "Copy Link"
+CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyBtn.Font = Enum.Font.GothamBold
+CopyBtn.TextSize = 15
+CopyBtn.AutoButtonColor = false
+CopyBtn.Parent = Main
+
+local CopyCorner = Instance.new("UICorner")
+CopyCorner.CornerRadius = UDim.new(0, 8)
+CopyCorner.Parent = CopyBtn
+
+local CopyStroke = Instance.new("UIStroke")
+CopyStroke.Color = Color3.fromRGB(90, 200, 120)
+CopyStroke.Thickness = 1
+CopyStroke.Parent = CopyBtn
+
+-- Hover effects
+local function hoverEffect(btn, normalColor, hoverColor)
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = hoverColor}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = normalColor}):Play()
+    end)
+end
+
+hoverEffect(CheckBtn, Color3.fromRGB(60, 180, 100), Color3.fromRGB(75, 200, 115))
+hoverEffect(CopyBtn, Color3.fromRGB(40, 40, 48), Color3.fromRGB(55, 55, 63))
+
+-- Copy Link functionality
+CopyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(KEY_LINK)
+        Status.TextColor3 = Color3.fromRGB(120, 230, 150)
+        Status.Text = "Link copied to clipboard!"
+    else
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Clipboard not supported by your executor."
+    end
+end)
+
+-- Check Key functionality
+CheckBtn.MouseButton1Click:Connect(function()
+    local enteredKey = KeyBox.Text
+
+    if enteredKey == "" then
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Please enter a key first."
+        return
+    end
+
+    if VALID_KEYS[enteredKey] then
+        Status.TextColor3 = Color3.fromRGB(120, 230, 150)
+        Status.Text = "Key accepted! Loading hub..."
+
+        task.wait(1)
+        ScreenGui:Destroy()
+
+        -- ============================================
+        ----[[
+    MM2-Style Coin Auto-Farmer
+    Features: smooth anti-bounce auto-collect, GUI counter, runtime timer,
+              adjustable speed slider, minimize, draggable
+    Place in: StarterPlayer > StarterPlayerScripts (LocalScript)
+--]]
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
+
+-- ========== CONFIGURATION ==========
+local CONFIG = {
+	CoinFolderName = "Coins",     -- change to your coin folder name
+	CoinNamePattern = "Coin",     -- change if your coins have different names
+	CollectionRadius = 4,         -- distance at which we stop moving and wait for pickup
+	SettleTimeout = 1.2,          -- seconds to wait for the coin to actually disappear after arriving
+	IgnoreDuration = 3,           -- seconds to skip a coin that failed to register as collected
+	MinSpeed = 10,
+	MaxSpeed = 200,
+	DefaultSpeed = 55,            -- studs/sec
+	CoinScanInterval = 0.5,       -- how often to rescan the workspace for coins
+}
+
+-- ========== STATE ==========
+local state = {
+	running = false,
+	coinsCollected = 0,
+	elapsedBeforeThisRun = 0,     -- accumulated runtime across previous ON periods
+	startTime = nil,              -- tick() when farm was last turned on
+	currentSpeed = CONFIG.DefaultSpeed,
+	currentTarget = nil,
+	currentTween = nil,
+	restorePhysics = nil,         -- closure to un-anchor / zero velocity for the in-flight move
+	arrivedAt = nil,              -- tick() when we reached the target and started waiting for real pickup
+	ignoredCoins = {},            -- [coin] = tick() when it's safe to retarget it again
+	heartbeatConn = nil,
+	lastScan = 0,
+	coinsCache = {},
+}
+
+----------------------------------------------------------------
+-- GUI CREATION (styled after the uploaded design)
+----------------------------------------------------------------
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CoinFarmerGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 280, 0, 220)
+mainFrame.Position = UDim2.new(0.85, -140, 0.1, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.Active = true
+mainFrame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = mainFrame
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(0, 170, 255)
+stroke.Thickness = 2
+stroke.Parent = mainFrame
+
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, 0, 0, 36)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Jeez Empire Mm2 Auto Farm"
+title.TextColor3 = Color3.fromRGB(0, 200, 255)
+title.TextSize = 15
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.TextScaled = false
+title.TextWrapped = true
+title.Parent = mainFrame
+
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Name = "Status"
+statusLabel.Size = UDim2.new(1, -20, 0, 24)
+statusLabel.Position = UDim2.new(0, 10, 0, 40)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "Status: Idle"
+statusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+statusLabel.TextSize = 16
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+statusLabel.Parent = mainFrame
+
+local coinsLabel = Instance.new("TextLabel")
+coinsLabel.Name = "CoinsCollected"
+coinsLabel.Size = UDim2.new(1, -20, 0, 24)
+coinsLabel.Position = UDim2.new(0, 10, 0, 66)
+coinsLabel.BackgroundTransparency = 1
+coinsLabel.Text = "Coins: 0"
+coinsLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
+coinsLabel.TextSize = 16
+coinsLabel.Font = Enum.Font.GothamBold
+coinsLabel.TextXAlignment = Enum.TextXAlignment.Left
+coinsLabel.Parent = mainFrame
+
+local runtimeLabel = Instance.new("TextLabel")
+runtimeLabel.Name = "Runtime"
+runtimeLabel.Size = UDim2.new(1, -20, 0, 24)
+runtimeLabel.Position = UDim2.new(0, 10, 0, 92)
+runtimeLabel.BackgroundTransparency = 1
+runtimeLabel.Text = "Runtime: 00:00:00"
+runtimeLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
+runtimeLabel.TextSize = 16
+runtimeLabel.Font = Enum.Font.Gotham
+runtimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+runtimeLabel.Parent = mainFrame
+
+local speedLabel = Instance.new("TextLabel")
+speedLabel.Name = "SpeedLabel"
+speedLabel.Size = UDim2.new(1, -20, 0, 20)
+speedLabel.Position = UDim2.new(0, 10, 0, 118)
+speedLabel.BackgroundTransparency = 1
+speedLabel.Text = "Speed: " .. CONFIG.DefaultSpeed .. " studs/s"
+speedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedLabel.TextSize = 14
+speedLabel.Font = Enum.Font.Gotham
+speedLabel.TextXAlignment = Enum.TextXAlignment.Left
+speedLabel.Parent = mainFrame
+
+local sliderBg = Instance.new("Frame")
+sliderBg.Name = "SliderBg"
+sliderBg.Size = UDim2.new(1, -20, 0, 8)
+sliderBg.Position = UDim2.new(0, 10, 0, 142)
+sliderBg.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+sliderBg.BorderSizePixel = 0
+sliderBg.Parent = mainFrame
+
+local sliderBgCorner = Instance.new("UICorner")
+sliderBgCorner.CornerRadius = UDim.new(1, 0)
+sliderBgCorner.Parent = sliderBg
+
+local function speedToAlpha(speed)
+	return (speed - CONFIG.MinSpeed) / (CONFIG.MaxSpeed - CONFIG.MinSpeed)
+end
+
+local sliderFill = Instance.new("Frame")
+sliderFill.Name = "SliderFill"
+sliderFill.Size = UDim2.new(speedToAlpha(CONFIG.DefaultSpeed), 0, 1, 0)
+sliderFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+sliderFill.BorderSizePixel = 0
+sliderFill.Parent = sliderBg
+
+local sliderFillCorner = Instance.new("UICorner")
+sliderFillCorner.CornerRadius = UDim.new(1, 0)
+sliderFillCorner.Parent = sliderFill
+
+local sliderKnob = Instance.new("TextButton")
+sliderKnob.Name = "SliderKnob"
+sliderKnob.Size = UDim2.new(0, 16, 0, 16)
+sliderKnob.Position = UDim2.new(speedToAlpha(CONFIG.DefaultSpeed), -8, 0.5, -8)
+sliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sliderKnob.AutoButtonColor = false
+sliderKnob.Text = ""
+sliderKnob.Parent = sliderBg
+
+local knobCorner = Instance.new("UICorner")
+knobCorner.CornerRadius = UDim.new(1, 0)
+knobCorner.Parent = sliderKnob
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Name = "ToggleBtn"
+toggleBtn.Size = UDim2.new(1, -20, 0, 36)
+toggleBtn.Position = UDim2.new(0, 10, 0, 164)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+toggleBtn.Text = "START FARMING"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextSize = 16
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.Parent = mainFrame
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0, 8)
+toggleCorner.Parent = toggleBtn
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Name = "Minimize"
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -35, 0, 3)
+minimizeBtn.BackgroundTransparency = 1
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.TextSize = 24
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.Parent = mainFrame
+
+-- Floating button shown while the GUI is hidden, to bring it back
+local openBtn = Instance.new("TextButton")
+openBtn.Name = "OpenBtn"
+openBtn.Size = UDim2.new(0, 46, 0, 46)
+openBtn.Position = UDim2.new(0.85, -23, 0.1, 0)
+openBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+openBtn.Text = "$"
+openBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+openBtn.TextSize = 22
+openBtn.Font = Enum.Font.GothamBold
+openBtn.Visible = false
+openBtn.Active = true
+openBtn.Draggable = true
+openBtn.Parent = screenGui
+
+local openBtnCorner = Instance.new("UICorner")
+openBtnCorner.CornerRadius = UDim.new(1, 0)
+openBtnCorner.Parent = openBtn
+
+local openBtnStroke = Instance.new("UIStroke")
+openBtnStroke.Color = Color3.fromRGB(0, 200, 255)
+openBtnStroke.Thickness = 2
+openBtnStroke.Parent = openBtn
+
+----------------------------------------------------------------
+-- DRAGGING
+----------------------------------------------------------------
+
+local dragging, dragStart, startPos
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		mainFrame.Position = UDim2.new(
+			startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+----------------------------------------------------------------
+-- SPEED SLIDER LOGIC
+----------------------------------------------------------------
+
+local sliding = false
+
+local function updateSpeedFromPosition(x)
+	local bgPos = sliderBg.AbsolutePosition.X
+	local bgSize = sliderBg.AbsoluteSize.X
+	local relative = math.clamp((x - bgPos) / bgSize, 0, 1)
+	state.currentSpeed = math.floor(CONFIG.MinSpeed + (CONFIG.MaxSpeed - CONFIG.MinSpeed) * relative)
+	sliderFill.Size = UDim2.new(relative, 0, 1, 0)
+	sliderKnob.Position = UDim2.new(relative, -8, 0.5, -8)
+	speedLabel.Text = "Speed: " .. state.currentSpeed .. " studs/s"
+end
+
+sliderKnob.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		sliding = true
+	end
+end)
+
+sliderBg.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		sliding = true
+		updateSpeedFromPosition(input.Position.X)
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if sliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		updateSpeedFromPosition(input.Position.X)
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		sliding = false
+	end
+end)
+
+----------------------------------------------------------------
+-- MINIMIZE / HIDE / SHOW
+----------------------------------------------------------------
+
+minimizeBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	openBtn.Visible = true
+end)
+
+openBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	openBtn.Visible = false
+end)
+
+----------------------------------------------------------------
+-- UTILITY FUNCTIONS
+----------------------------------------------------------------
+
+local function formatTime(seconds)
+	local h = math.floor(seconds / 3600)
+	local m = math.floor((seconds % 3600) / 60)
+	local s = math.floor(seconds % 60)
+	return string.format("%02d:%02d:%02d", h, m, s)
+end
+
+local function getTotalRunSeconds()
+	local total = state.elapsedBeforeThisRun
+	if state.running and state.startTime then
+		total += tick() - state.startTime
+	end
+	return total
+end
+
+local function getCoinPosition(coin)
+	if coin:IsA("BasePart") then
+		return coin.Position
+	elseif coin:IsA("Model") then
+		return coin:GetPivot().Position
+	end
+	return nil
+end
+
+local function getCoinsFolder()
+	local folder = Workspace:FindFirstChild(CONFIG.CoinFolderName)
+	if folder then return folder end
+
+	for _, obj in ipairs(Workspace:GetDescendants()) do
+		if obj:IsA("Folder") and obj.Name == CONFIG.CoinFolderName then
+			return obj
+		end
+	end
+	return nil
+end
+
+local function rescanCoins()
+	local coins = {}
+	local folder = getCoinsFolder()
+	local searchRoot = folder or Workspace
+
+	for _, obj in ipairs(searchRoot:GetDescendants()) do
+		if (obj:IsA("BasePart") or obj:IsA("Model")) and obj.Name:find(CONFIG.CoinNamePattern) then
+			if getCoinPosition(obj) then
+				table.insert(coins, obj)
+			end
+		end
+	end
+	state.coinsCache = coins
+	state.lastScan = tick()
+end
+
+local function getNearestCoin()
+	if tick() - state.lastScan > CONFIG.CoinScanInterval then
+		rescanCoins()
+	end
+
+	local now = tick()
+	local nearest, nearestDist = nil, math.huge
+	for _, coin in ipairs(state.coinsCache) do
+		if coin and coin.Parent then
+			local ignoredUntil = state.ignoredCoins[coin]
+			if ignoredUntil and ignoredUntil <= now then
+				state.ignoredCoins[coin] = nil -- expired, eligible again
+				ignoredUntil = nil
+			end
+			if not ignoredUntil then
+				local pos = getCoinPosition(coin)
+				if pos then
+					local dist = (humanoidRootPart.Position - pos).Magnitude
+					if dist < nearestDist then
+						nearest, nearestDist = coin, dist
+					end
+				end
+			end
+		end
+	end
+	return nearest
+end
+
+----------------------------------------------------------------
+-- MOVEMENT ENGINE (anti-jitter, anti-bounce)
+----------------------------------------------------------------
+
+-- Anchors the HRP during the move so physics can't fight the tween (jitter),
+-- keeps the character's current Y instead of snapping to the coin's exact
+-- height (prevents floor-clip bounce), and zeroes leftover velocity before
+-- handing control back to physics. This function only handles movement —
+-- coin counting happens in farmHeartbeat, tied to the coin actually
+-- disappearing from the workspace (a real pickup), not just arrival.
+local function moveToCoin(coin)
+	local coinPos = getCoinPosition(coin)
+	if not coinPos then return end
+
+	local keepY = humanoidRootPart.Position.Y
+	local flatTarget = Vector3.new(coinPos.X, keepY, coinPos.Z)
+
+	local distance = (humanoidRootPart.Position - flatTarget).Magnitude
+	local duration = math.max(distance / state.currentSpeed, 0.05)
+
+	local wasAnchored = humanoidRootPart.Anchored
+	humanoidRootPart.Anchored = true
+
+	local tween = TweenService:Create(
+		humanoidRootPart,
+		TweenInfo.new(duration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+		{ CFrame = CFrame.new(flatTarget, flatTarget + humanoidRootPart.CFrame.LookVector) }
+	)
+
+	local restored = false
+	local function restorePhysics()
+		if restored then return end
+		restored = true
+		if humanoidRootPart and humanoidRootPart.Parent then
+			humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+			humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+			humanoidRootPart.Anchored = wasAnchored
+		end
+	end
+
+	state.currentTarget = coin
+	state.currentTween = tween
+	state.restorePhysics = restorePhysics
+	state.arrivedAt = nil
+
+	tween.Completed:Connect(function()
+		restorePhysics()
+		state.arrivedAt = state.arrivedAt or tick()
+	end)
+
+	tween:Play()
+end
+
+----------------------------------------------------------------
+-- MAIN FARM LOOP
+----------------------------------------------------------------
+
+local function farmHeartbeat()
+	if not state.running then return end
+
+	-- refresh character references if respawned
+	if not humanoidRootPart or not humanoidRootPart.Parent then
+		character = player.Character
+		if character then
+			humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+			humanoid = character:FindFirstChild("Humanoid")
+		end
+		if not humanoidRootPart then return end
+	end
+
+	if humanoid and humanoid.Health <= 0 then
+		return
+	end
+
+	runtimeLabel.Text = "Runtime: " .. formatTime(getTotalRunSeconds())
+
+	local function clearTarget()
+		state.currentTarget = nil
+		state.currentTween = nil
+		state.restorePhysics = nil
+		state.arrivedAt = nil
+	end
+
+	if state.currentTarget then
+		local coin = state.currentTarget
+
+		-- Real pickup: the coin instance is actually gone. This is the only
+		-- event that increments the counter, so it always matches a genuine
+		-- collection rather than just "got close" or "tween finished".
+		if not coin.Parent then
+			if state.currentTween then state.currentTween:Cancel() end
+			if state.restorePhysics then state.restorePhysics() end
+			state.coinsCollected += 1
+			coinsLabel.Text = "Coins: " .. state.coinsCollected
+			clearTarget()
+			return
+		end
+
+		-- Not yet marked "arrived" — check if we're close enough to stop
+		-- moving and start waiting for the real pickup to register.
+		if not state.arrivedAt then
+			local pos = getCoinPosition(coin)
+			if pos and (humanoidRootPart.Position - pos).Magnitude <= CONFIG.CollectionRadius then
+				if state.currentTween then state.currentTween:Cancel() end
+				if state.restorePhysics then state.restorePhysics() end
+				state.arrivedAt = tick()
+			end
+		end
+
+		-- Arrived but the coin still hasn't disappeared after a reasonable
+		-- wait — something's off (wrong CollectionRadius, coin not actually
+		-- reachable, etc). Give up on it, ignore it briefly, and move on
+		-- instead of looping on it forever or miscounting it.
+		if state.arrivedAt and (tick() - state.arrivedAt) > CONFIG.SettleTimeout then
+			state.ignoredCoins[coin] = tick() + CONFIG.IgnoreDuration
+			clearTarget()
+		end
+
+		return
+	end
+
+	local coin = getNearestCoin()
+	if coin then
+		statusLabel.Text = "Status: Farming..."
+		statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+		moveToCoin(coin)
+	else
+		statusLabel.Text = "Status: Waiting for coins..."
+		statusLabel.TextColor3 = Color3.fromRGB(220, 220, 100)
+	end
+end
+
+local function startFarming()
+	if state.running then return end
+	state.running = true
+	state.startTime = tick()
+
+	toggleBtn.Text = "STOP FARMING"
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+	statusLabel.Text = "Status: Farming..."
+	statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+
+	if not player.Character then
+		player.CharacterAdded:Wait()
+	end
+	character = player.Character
+	humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+	humanoid = character:WaitForChild("Humanoid")
+
+	state.heartbeatConn = RunService.Heartbeat:Connect(farmHeartbeat)
+end
+
+local function stopFarming()
+	if not state.running then return end
+	state.running = false
+
+	if state.startTime then
+		state.elapsedBeforeThisRun += tick() - state.startTime
+	end
+	state.startTime = nil
+
+	if state.heartbeatConn then
+		state.heartbeatConn:Disconnect()
+		state.heartbeatConn = nil
+	end
+
+	-- cancel any in-flight move without counting it as collected
+	if state.currentTween then
+		state.currentTween:Cancel()
+	end
+	if state.restorePhysics then
+		state.restorePhysics()
+	end
+	state.currentTarget = nil
+	state.currentTween = nil
+	state.restorePhysics = nil
+	state.arrivedAt = nil
+
+	toggleBtn.Text = "START FARMING"
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+	statusLabel.Text = "Status: Idle"
+	statusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+end
+
+toggleBtn.MouseButton1Click:Connect(function()
+	if state.running then
+		stopFarming()
+	else
+		startFarming()
+	end
+end)
+
+-- handle respawn mid-farm
+player.CharacterAdded:Connect(function(newChar)
+	character = newChar
+	humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+	humanoid = character:WaitForChild("Humanoid")
+	state.currentTarget = nil
+	state.currentTween = nil
+	state.restorePhysics = nil
+	state.arrivedAt = nil
+end)
+
+print("Coin Farmer loaded. Click START FARMING to begin.")
+        -- ============================================
+    else
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Invalid key. Try again."
+    end
+end)
+
+-- Make it draggable
+local dragging, dragInput, dragStart, startPos
+
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Main.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        Main.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+        -- ============================================
+    else
+        Status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        Status.Text = "Invalid key. Try again."
+    end
+end)
+
+-- Make it draggable
+local dragging, dragInput, dragStart, startPos
+
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Main.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        Main.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
